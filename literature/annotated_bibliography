@@ -1,0 +1,169 @@
+# Annotated Bibliography
+## Digital Mental Health NLP Pipeline for Asian Adolescents
+
+**Compiled by:** Lin Fang Yu 林芳伃 | MPH Candidate, NUS  
+**Last Updated:** May 2026  
+**Total Papers:** 12 across 4 categories
+
+---
+
+## Category 1: Clinical Foundation — Singapore Context
+
+### 1.1 Ministry of Health Singapore (2024). National Mental Health and Well-being Strategy — Youth Mental Health Report.
+
+**Citation:** Ministry of Health Singapore. (2024). Whole-of-Society Efforts to Support Mental Health and Well-being of Youths in Singapore. MOH.
+
+**Summary:** This official MOH report establishes the epidemiological baseline for youth mental health in Singapore. Key findings include 1 in 4 young adults (18–29) reporting poor mental health in 2024 — the highest rate across all age groups. The report documents the reach of existing services: CHAT has supported 7,600+ youths, CREST-Youth has reached 98,000+ individuals, and 88.7% of young adults prefer online over face-to-face help-seeking. The report identifies early identification and upstream prevention as the primary gaps in the current system.
+
+**Relevance to Pipeline:** Provides the primary justification for this project. The 88.7% online preference statistic directly motivates the use of digital/NLP-based detection rather than waiting for clinic-based identification. The 1 in 4 statistic establishes the scale of unmet need.
+
+**Key Number:** 1 in 4 young adults reported poor mental health (2024) — highest across all age groups.
+
+---
+
+### 1.2 Weng, J.H. et al. (2024). Mental wellness self-care in Singapore with mindline.sg.
+
+**Citation:** Weng, J.H., Lim, H.A., Ho, C.S., & Ng, B.Y. (2024). Mental wellness self-care in Singapore with mindline.sg. JMIR Mental Health. DOI: 10.2196/44443
+
+**Summary:** This paper evaluates mindline.sg, Singapore's national digital mental health platform launched by MOH. The platform received 447,000+ visitors in its first two years, demonstrating strong population-level engagement with digital mental health tools. The paper identifies persistent challenges including stigma, limited mental health literacy, and insufficient trained personnel — challenges that automated NLP screening could partially address. The authors note that adolescents and young adults are the most active demographic on the platform.
+
+**Relevance to Pipeline:** Establishes that Singapore's digital mental health infrastructure is active and well-used. The pipeline proposed in this project is designed to integrate with mindline.sg as a medium-risk output channel, routing users identified by NLP screening to appropriate platform resources.
+
+**Key Number:** 447,000+ visitors in first 2 years; adolescents most active demographic.
+
+---
+
+### 1.3 Systematic Review (2026). Types and effectiveness of digital interventions for mental health literacy and help-seeking in adolescents (2021–2025).
+
+**Citation:** Al-Rafidain Journal of Medical Sciences. (2026). Types and effectiveness of digital interventions for mental health literacy and help-seeking in adolescents.
+
+**Summary:** This systematic review covers digital mental health interventions for adolescents across 2021–2025, evaluating their effectiveness in improving mental health literacy and help-seeking behaviour. Key findings include that digital interventions show consistent effectiveness in reducing stigma and improving help-seeking intentions, but adoption remains limited by awareness barriers and trust deficits. The review notes that interventions specifically designed for cultural context significantly outperform generic tools in Asian populations.
+
+**Relevance to Pipeline:** Provides evidence base for why culturally-adapted digital tools outperform generic Western tools — directly supporting the rationale for building an Asian adolescent-specific NLP pipeline rather than deploying existing English-language tools.
+
+**Key Finding:** Culturally-adapted digital interventions significantly outperform generic tools in Asian adolescent populations.
+
+---
+
+## Category 2: NLP Methods for Mental Health Detection
+
+### 2.1 Ji, S. et al. (2024). Chinese MentalBERT: Domain-adaptive pre-training on social media for Chinese mental health text analysis.
+
+**Citation:** Ji, S., Zhang, T., Cambria, E., & Bhatia, S. (2024). Chinese MentalBERT: Domain-adaptive pre-training on social media for Chinese mental health text analysis. arXiv:2402.09151
+
+**Summary:** This paper introduces Chinese MentalBERT, a BERT-based language model pre-trained on Chinese social media mental health text using domain-adaptive pre-training. The model achieves F1=88.39% on the SOS-1K Chinese suicide risk dataset — substantially outperforming general Chinese BERT models on the same task. The authors demonstrate that domain-specific pre-training on mental health social media text is critical for capturing the indirect, contextual, and culturally-specific ways that Chinese speakers express psychological distress online. The model is publicly available and fine-tuneable for downstream tasks.
+
+**Relevance to Pipeline:** Chinese MentalBERT is the core model for Tier 1 (Screening) of this pipeline. Its superiority over general BERT on Chinese mental health text directly addresses the language and cultural gap that motivates this project. The F1=88.39% benchmark provides a performance baseline for pipeline evaluation.
+
+**Key Number:** F1=88.39% on Chinese suicide risk dataset (SOS-1K) — substantially above general BERT baseline.
+
+---
+
+### 2.2 CNSocialDepress (2025). A Chinese social media dataset for depression risk detection.
+
+**Citation:** CNSocialDepress. (2025). A Chinese social media dataset containing depression-related content for risk detection and analysis. arXiv:2510.11233
+
+**Summary:** CNSocialDepress is a large-scale Chinese social media dataset collected from Weibo, containing 44,178 posts from 233 users, with 10,306 depression-related segments annotated by psychological experts. The dataset enables fine-grained, interpretable analysis of depressive signals in Chinese social media text. Annotations include segment-level depression markers, severity indicators, and temporal patterns of posting behaviour — making it suitable for both classification and longitudinal analysis tasks.
+
+**Relevance to Pipeline:** CNSocialDepress is the primary dataset used in the notebooks of this project. Its size (44,178 posts), expert annotation quality, and Weibo origin make it the most appropriate publicly available resource for building and demonstrating a Chinese-language mental health NLP pipeline for Asian adolescents.
+
+**Key Number:** 44,178 posts from 233 users; 10,306 depression-related segments with expert annotation.
+
+---
+
+### 2.3 Chim, J. et al. (2024). Overview of the CLPsych 2024 Shared Task.
+
+**Citation:** Chim, J., Kochkina, E., Liakata, M., & Tsakalidis, A. (2024). Overview of the CLPsych 2024 Shared Task: Leveraging Large Language Models for Identifying Evidence of Suicidality Risk. ACL Anthology.
+
+**Summary:** The CLPsych 2024 Shared Task focuses on improving the interpretability of LLMs in mental health analysis — specifically, identifying linguistic evidence of suicidality risk in Reddit posts. This task represents the gold standard benchmark for English-language mental health NLP evaluation. Participating systems demonstrated that LLMs can identify suicidality evidence with high accuracy when given structured prompting and domain-specific fine-tuning. The task also identified that most top-performing systems rely on English data and fail to generalise across languages and cultures.
+
+**Relevance to Pipeline:** CLPsych 2024 provides the English-language benchmark against which the English component of this pipeline can be evaluated. The finding that top systems fail to generalise across languages directly motivates the multilingual approach of this project.
+
+**Key Finding:** Top-performing English LLMs fail to generalise across languages — the primary gap this pipeline addresses.
+
+---
+
+### 2.4 Zhang, T. et al. (2022). Natural language processing applied to mental illness detection: A narrative review.
+
+**Citation:** Zhang, T., Schoene, A.M., Ji, S., & Ananiadou, S. (2022). Natural language processing applied to mental illness detection: A narrative review. NPJ Digital Medicine, 5(1), 46. DOI: 10.1038/s41746-022-00589-7
+
+**Summary:** This comprehensive narrative review covers NLP applications in mental health detection across depression, anxiety, schizophrenia, PTSD, and suicide risk. The review identifies Reddit, Twitter, and clinical notes as the dominant data sources — all English-language and Western-population-based. Key findings include that transformer-based models consistently outperform traditional ML, and temporal modelling of posting patterns significantly improves detection accuracy. Asian-language mental health NLP is explicitly identified as an underserved research area.
+
+**Relevance to Pipeline:** The finding that temporal modelling improves accuracy supports Tier 3 LSTM forecasting. The explicit identification of Asian-language NLP as underserved directly positions this pipeline as addressing a documented gap.
+
+**Key Finding:** Asian-language mental health NLP is explicitly identified as underserved; temporal modelling significantly improves detection accuracy.
+
+---
+
+## Category 3: Multilingual AI — Google DeepMind Research
+
+### 3.1 Google DeepMind (2025). Prompting with Phonemes: Enhancing LLM Multilinguality for non-Latin Scripts.
+
+**Citation:** Google DeepMind. (2025, April 29). Prompting with Phonemes: Enhancing LLM Multilinguality for non-Latin Scripts.
+
+**Summary:** This paper addresses a fundamental limitation of current LLMs: they perform significantly worse on non-Latin script languages (including Chinese, Japanese, Korean) compared to English. The authors demonstrate that phoneme-based prompting strategies substantially improve LLM performance on non-Latin languages. The paper provides quantitative evidence that the gap between English and Chinese LLM performance is systematic and architecture-level — not simply a data quantity issue.
+
+**Relevance to Pipeline:** Provides technical evidence for why English-trained LLMs systematically underperform on Chinese adolescent mental health text — the core problem this pipeline addresses. Supports the decision to use Chinese MentalBERT rather than prompting a general English-first LLM.
+
+**Key Finding:** Non-Latin script languages suffer systematic, architecture-level performance gaps in current LLMs.
+
+---
+
+### 3.2 Google DeepMind (2025). EmbeddingGemma: Powerful and Lightweight Text Representations.
+
+**Citation:** Google DeepMind. (2025, September 24). EmbeddingGemma: Powerful and Lightweight Text Representations.
+
+**Summary:** EmbeddingGemma introduces lightweight text embedding models derived from the Gemma architecture, optimised for high-quality multilingual text representations. The models achieve strong performance on multilingual benchmarks while remaining computationally efficient. The paper demonstrates particular strength on semantic similarity and classification tasks — both central to mental health text analysis.
+
+**Relevance to Pipeline:** EmbeddingGemma-style lightweight text representations are relevant to Tier 2 (Risk Scoring) feature extraction. For deployment in resource-constrained Singapore school settings, lightweight embedding models that maintain multilingual performance are preferable to full fine-tuned transformers.
+
+**Key Finding:** Lightweight multilingual embeddings can match large model performance on classification tasks.
+
+---
+
+### 3.3 Google DeepMind (2024). Tx-LLM: A Large Language Model for Therapeutics.
+
+**Citation:** Google DeepMind. (2024, June 10). Tx-LLM: A Large Language Model for Therapeutics.
+
+**Summary:** Tx-LLM demonstrates that LLMs can be successfully adapted for clinical and therapeutic applications, establishing a methodological precedent for domain-specific LLM fine-tuning in high-stakes clinical contexts. The paper includes governance and safety frameworks for responsible clinical AI deployment. The authors argue that domain-specific fine-tuning dramatically outperforms general-purpose LLMs in clinical settings.
+
+**Relevance to Pipeline:** Provides precedent for the clinical AI approach in this pipeline. The argument that domain-specific fine-tuning outperforms general LLMs in clinical contexts supports the use of Chinese MentalBERT over general-purpose multilingual models.
+
+**Key Finding:** Domain-specific LLM fine-tuning dramatically outperforms general-purpose models in clinical settings.
+
+---
+
+## Category 4: Cognitive Science Foundation
+
+### 4.1 Eckstein, M.K., Summerfield, C., Daw, N.D., & Miller, K.J. (2026). Hybrid neural-cognitive models reveal how memory shapes human reward learning.
+
+**Citation:** Eckstein, M.K., Summerfield, C., Daw, N.D., & Miller, K.J. (2026). Hybrid neural-cognitive models reveal how memory shapes human reward learning. Nature Human Behaviour. DOI: 10.1038/s41562-025-02324-0
+
+**Summary:** Published in Nature Human Behaviour by Google DeepMind and Princeton researchers, this paper demonstrates that human behaviour cannot be adequately modelled by simple reinforcement learning algorithms. Using a hybrid neural-cognitive modelling approach (n=862 participants, 617,871 valid trials), the authors show that successful models require flexible memory variables tracking reward history at multiple timescales. The winning Memory-ANN model achieves 68.3% predictive accuracy vs 60.6% for the best classic RL model.
+
+**Relevance to Pipeline:** Informs Tier 3 (Temporal Forecasting) design. The finding that human behaviour encodes risk history at multiple timescales supports LSTM-based 7-day trajectory prediction. The Memory-ANN architecture — separating memory variables from choice variables — provides theoretical basis for separating historical context features from immediate distress signals in the temporal layer.
+
+**Key Finding:** Human behaviour encodes reward/risk history at multiple timescales — supporting LSTM temporal modelling over point-in-time assessment.
+
+---
+
+## Summary Table
+
+| # | Paper | Category | Key Contribution to Pipeline |
+|---|---|---|---|
+| 1 | MOH Singapore (2024) | Clinical | Primary justification — 1 in 4, 88.7% online preference |
+| 2 | Weng et al. (2024) | Clinical | mindline.sg integration — 447,000+ users |
+| 3 | Systematic Review (2026) | Clinical | Cultural adaptation superiority in Asian populations |
+| 4 | Ji et al. (2024) | NLP Methods | Tier 1 core model — Chinese MentalBERT F1=88.39% |
+| 5 | CNSocialDepress (2025) | NLP Methods | Primary dataset — 44,178 posts, expert annotated |
+| 6 | Chim et al. (2024) | NLP Methods | English benchmark — CLPsych 2024 |
+| 7 | Zhang et al. (2022) | NLP Methods | Asian NLP gap documented in literature |
+| 8 | DeepMind Phonemes (2025) | Multilingual AI | Non-Latin script gap — motivates MentalBERT |
+| 9 | EmbeddingGemma (2025) | Multilingual AI | Lightweight embeddings for Tier 2 |
+| 10 | Tx-LLM (2024) | Multilingual AI | Clinical LLM precedent |
+| 11 | Eckstein et al. (2026) | Cognitive Science | Tier 3 LSTM design — multi-timescale memory |
+
+---
+
+*For full pipeline documentation see [framework/pipeline_design.md](../framework/pipeline_design.md)*
+*For policy implications see [policy/policy_brief.md](../policy/policy_brief.md)*

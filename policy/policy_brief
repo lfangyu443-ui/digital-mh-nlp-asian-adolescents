@@ -1,0 +1,166 @@
+# Digital Mental Health NLP Pipeline for Asian Adolescents
+### A Clinically-Grounded, Multilingual Framework for Early Risk Detection and Platform Adoption
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![Languages: ZH | EN](https://img.shields.io/badge/Languages-ZH%20%7C%20EN-red.svg)]()
+[![Status: Research](https://img.shields.io/badge/Status-Research-green.svg)]()
+
+> **Author:** Lin Fang Yu 林芳伃 | MPH Candidate, National University of Singapore
+> **Affiliation:** NUS Saw Swee Hock School of Public Health
+> **Contact:** el649078@u.nus.edu | fangyulin1220@gmail.com
+> **Last Updated:** May 2026
+
+---
+
+## The Problem
+
+**1 in 4 young adults in Singapore reported poor mental health in 2024** — the highest rate across all age groups (MOH, 2024). Yet most NLP tools for mental health detection are:
+
+- Trained on **English-language data** from Reddit and Twitter
+- Designed for **Western populations** with different cultural expressions of distress
+- **Not validated** for Mandarin-speaking or multilingual Asian adolescent populations
+- **Disconnected** from existing national digital health infrastructure (HealthHub, mindline.sg)
+
+Meanwhile, Singapore's national digital mental health platform mindline.sg received over **447,000 visitors** in its first two years, with adolescents showing the strongest preference for online over face-to-face help-seeking (Weng et al., 2024). The infrastructure exists. The clinical need is documented. What is missing is a **culturally-adapted NLP pipeline** that can operate within it.
+
+This project addresses that gap.
+
+---
+
+## Project Objectives
+
+1. **Document** the clinical and technical rationale for an Asian-adolescent-focused mental health NLP pipeline
+2. **Design** a 3-tier risk detection framework grounded in clinical evidence and existing Singapore MOH infrastructure
+3. **Demonstrate** NLP preprocessing and classification using publicly available multilingual mental health datasets
+4. **Propose** a policy framework connecting pipeline outputs to HealthHub, REACH, and Singapore's National Mental Health and Well-being Strategy
+
+---
+
+## Pipeline Architecture
+
+This project proposes a 3-tier system — drawing on the GUARDIAN framework (Lin, 2026) — adapted for deployment within Singapore's school and community mental health settings.
+┌─────────────────────────────────────────────────────────────────┐
+│                    INPUT LAYER                                  │
+│  Social media text (Mandarin/English) · Wearable signals        │
+│  Smartphone metadata · Self-report survey responses             │
+└─────────────────────┬───────────────────────────────────────────┘
+│
+┌─────────────────────▼───────────────────────────────────────────┐
+│                    TIER 1: SCREENING                            │
+│  Text Classification — Distress Signal Detection                │
+│  Model: Chinese MentalBERT (Ji et al., 2024)                   │
+│  Languages: Mandarin (Traditional/Simplified) + English         │
+│  Output: Binary low/high distress flag                          │
+└─────────────────────┬───────────────────────────────────────────┘
+│
+┌─────────────────────▼───────────────────────────────────────────┐
+│                    TIER 2: RISK SCORING                         │
+│  Contextual Risk Assessment                                     │
+│  Features: Linguistic markers · Temporal patterns              │
+│            Social isolation signals · Help-seeking behaviour    │
+│  Model: XGBoost classifier                                      │
+│  Output: Risk score (0–100) with interpretable feature weights  │
+└─────────────────────┬───────────────────────────────────────────┘
+│
+┌─────────────────────▼───────────────────────────────────────────┐
+│                    TIER 3: TEMPORAL FORECASTING                 │
+│  7-Day Trajectory Prediction                                    │
+│  Model: LSTM with memory-based context encoding                 │
+│  Reference: Eckstein et al. (2026) — memory representations    │
+│             at multiple timescales                              │
+│  Output: Risk trajectory + recommended intervention timing      │
+└─────────────────────┬───────────────────────────────────────────┘
+│
+┌─────────────────────▼───────────────────────────────────────────┐
+│                    OUTPUT / ACTION LAYER                        │
+│  Low risk    → HealthHub self-care resources                 │
+│  Medium risk → CHAT webCHAT referral + peer support         │
+│  High risk   → REACH school counsellor escalation           │
+│                   + IMH crisis pathway activation               │
+└─────────────────────────────────────────────────────────────────┘
+---
+
+## Why Asian Adolescents Specifically?
+
+| Dimension | Western Context | Asian Adolescent Context |
+|---|---|---|
+| **Language** | English | Mandarin, mixed code-switching |
+| **Expression** | Direct emotional disclosure | Indirect, somatic, metaphorical |
+| **Platform** | Reddit, Twitter | Instagram, Discord, LINE, Xiaohongshu |
+| **Help-seeking** | Individual | Family-mediated, stigma-avoidant |
+| **Distress signals** | "I feel depressed" | Academic pressure framing, physical complaints |
+
+Generic NLP models trained on Western English data **systematically miss** these signals. Chinese MentalBERT (Ji et al., 2024) achieves F1=88.39% on Chinese suicide risk data — compared to much lower performance from general BERT models on the same task.
+
+---
+
+## Datasets Used
+
+| Dataset | Language | Size | Access |
+|---|---|---|---|
+| CNSocialDepress | Chinese (Simplified) | 44,178 posts, 233 users | arXiv:2510.11233 |
+| CLPsych 2024 | English | Reddit posts | Request via CLPsych |
+| SWMH | Chinese + English | Multi-disorder | Academic request |
+
+> **Ethics Note:** No real patient data is included in this repository. All notebooks use synthetic or publicly available research datasets only.
+
+---
+
+## Key References
+
+### Clinical Foundation
+- Ministry of Health Singapore (2024). *National Mental Health and Well-being Strategy.*
+- Weng, J.H. et al. (2024). Mental wellness self-care in Singapore with mindline.sg. *JMIR Mental Health.* DOI: 10.2196/44443
+
+### NLP Methods
+- Ji, S. et al. (2024). Chinese MentalBERT. *arXiv:2402.09151*
+- CNSocialDepress (2025). *arXiv:2510.11233*
+- Chim, J. et al. (2024). CLPsych 2024 Shared Task. *ACL Anthology.*
+
+### Multilingual AI
+- Google DeepMind (2025). Prompting with Phonemes: Enhancing LLM Multilinguality for non-Latin Scripts.
+- Google DeepMind (2025). EmbeddingGemma: Powerful and Lightweight Text Representations.
+- Google DeepMind (2024). Tx-LLM: A Large Language Model for Therapeutics.
+
+### Cognitive Science
+- Eckstein, M.K. et al. (2026). Hybrid neural-cognitive models reveal how memory shapes human reward learning. *Nature Human Behaviour.*
+
+---
+
+## Singapore Policy Alignment
+
+| Component | Role in Pipeline |
+|---|---|
+| **HealthHub** | Low-risk output channel |
+| **mindline.sg** | Medium-risk chatbot and peer support referral |
+| **CHAT / webCHAT** | Medium-risk counsellor escalation |
+| **REACH (School)** | High-risk school-based escalation |
+| **IMH Crisis Services** | High-risk immediate clinical response |
+| **NEHR** | Longitudinal outcome tracking |
+
+---
+
+## Ethical Considerations
+
+1. **Clinical safety first** — NLP outputs support, never replace, clinical judgment
+2. **Transparency** — All model decisions are interpretable and explainable
+3. **Cultural validity** — Models must be validated on Asian adolescent populations
+4. **Consent and privacy** — Real-world deployment requires explicit informed consent
+5. **Equity** — Regular audits to prevent systematic disadvantage
+
+---
+
+## 🔗 Related Projects
+
+- **GUARDIAN** — Multimodal Predictive Model for Adolescent Self-Harm Risk: [github.com/lfangyu443-ui/guardian-db](https://github.com/lfangyu443-ui/guardian-db)
+
+---
+
+## 📄 License
+
+MIT License — see LICENSE for details.
+
+---
+
+*This is a research and documentation project. No clinical decisions should be made based on this pipeline without appropriate clinical validation and institutional governance.*

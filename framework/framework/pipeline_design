@@ -1,0 +1,207 @@
+# Pipeline Design Documentation
+## Digital Mental Health NLP Pipeline for Asian Adolescents
+
+**Author:** Lin Fang Yu 林芳伃 | MPH Candidate, NUS  
+**Last Updated:** May 2026  
+**Version:** 1.0
+
+---
+
+## Overview
+
+This document describes the full technical and clinical design of the 3-tier Digital Mental Health NLP Pipeline for Asian Adolescents. Each design decision is grounded in clinical evidence, technical literature, and Singapore's national digital health infrastructure requirements.
+
+The pipeline is designed to:
+- Detect early mental health distress signals in Mandarin and English digital text
+- Generate interpretable, clinician-reviewable risk scores
+- Predict 7-day risk trajectories for proactive intervention timing
+- Route identified individuals to appropriate Singapore mental health services
+
+---
+
+## Design Principles
+
+| Principle | Description |
+|---|---|
+| **Clinical safety first** | No automated action without human review at high-risk threshold |
+| **Interpretability** | Every output includes explainable feature weights |
+| **Cultural validity** | Models trained and validated on Asian adolescent populations |
+| **Multilingual parity** | Mandarin and English treated with equal rigour |
+| **Minimal footprint** | Lightweight models deployable in resource-constrained school settings |
+| **Privacy by design** | No persistent storage of raw text; anonymised feature vectors only |
+| **Ecosystem integration** | Outputs map directly to existing Singapore service pathways |
+
+---
+
+## System Architecture
+INPUT LAYER
+├── Social Media Text (ZH/EN) — Weibo, Instagram
+├── Self-Report Survey — PHQ-9/GAD-7
+└── Contextual Metadata — Posting time/frequency
+│
+TIER 1: SCREENING
+├── Model: Chinese MentalBERT (Ji et al., 2024)
+├── Task: Binary classification (distress / no distress)
+├── Languages: Mandarin (Traditional + Simplified) + English
+├── Benchmark: F1=88.39% on SOS-1K Chinese suicide risk dataset
+└── Output: LOW → exit pipeline | HIGH → proceed to Tier 2
+│
+TIER 2: RISK SCORING
+├── Model: XGBoost Classifier
+├── Features: Linguistic · Temporal · Social · Cultural
+└── Output: Risk score 0–100 + interpretable feature weights
+│
+TIER 3: TEMPORAL FORECASTING
+├── Model: LSTM (30-day lookback)
+├── Basis: Eckstein et al. (2026) — multi-timescale memory
+└── Output: 7-day risk trajectory + intervention timing
+│
+OUTPUT / ACTION LAYER
+├── Score 0–30   LOW    → HealthHub self-care
+├── Score 31–65  MEDIUM → mindline.sg + CHAT webCHAT
+└── Score 66–100 HIGH   → REACH + IMH crisis pathway
+HIGH outputs require human clinical review
+---
+
+## Tier 1: Screening — Detailed Design
+
+### Model Selection Rationale
+
+| Model | F1 on Chinese MH Data | Rationale |
+|---|---|---|
+| Chinese MentalBERT | 88.39% | Domain-specific pre-training on Chinese mental health social media |
+| Chinese BERT (general) | ~72% | No domain adaptation |
+| Multilingual BERT | ~68% | English-dominant; non-Latin script gap (DeepMind, 2025) |
+| GPT-4 (prompted) | ~74% | Fails on indirect Chinese distress expression |
+
+### Cultural Adaptation Notes
+
+Asian adolescents express distress differently from Western populations:
+
+- **Academic pressure framing:** "我考試又不及格了" (Failed exam again) — may indicate deeper distress
+- **Somatic language:** "我頭很痛，睡不著" (Headache, can't sleep) — physical complaints often mask psychological distress
+- **Indirect expression:** "最近好累" (So tired lately) — exhaustion as distress proxy
+- **Family pressure markers:** References to parental expectations, shame, filial obligation
+- **Code-switching:** Mixed Mandarin/English common in Singapore — "好stressed, cannot tahan anymore"
+
+---
+
+## Tier 2: Risk Scoring — Detailed Design
+
+### Feature Engineering
+
+**Linguistic Features:**
+- Hopelessness score — future-negative language frequency
+- Negation density — "cannot", "never", "no point" patterns
+- Help-seeking signals — explicit and implicit support requests
+- Emotional valence trajectory — sentiment change over time
+
+**Temporal Features:**
+- Late-night posting frequency (11pm–4am)
+- Posting frequency change — sudden increase or decrease
+- Recency weighting — recent signals weighted more heavily
+
+**Cultural Context Features (Asian adolescent-specific):**
+- Academic stress markers — exam period, results, rankings
+- Family pressure language — parental expectations, shame
+- Social comparison — "everyone is better than me"
+- Face-saving language — indirect distress through performance framing
+
+### Sample Interpretability Output
+Risk Score: 74/100 (HIGH)
+Top contributing factors:
+├── Late-night posting (3 nights this week)     +18.2
+├── Hopelessness language detected              +16.7
+├── Social withdrawal pattern (7 days)         +14.3
+├── Academic stress markers (exam period)       +11.8
+├── Somatic complaints (sleep, appetite)        + 9.4
+└── Decreased response to peer messages         + 3.6
+Clinical note: Patterns consistent with moderate-severe
+depression risk. Recommend timely outreach.
+---
+
+## Tier 3: Temporal Forecasting — Detailed Design
+
+### Theoretical Basis
+Informed by Eckstein et al. (2026): human behaviour encodes risk history at multiple timescales. The Memory-ANN framework — separating memory variables from choice variables — informs the LSTM design by distinguishing historical context features from immediate distress signals.
+
+### Sample Clinical 
+OutputDay 1: 0.71  HIGH
+Day 2: 0.74  HIGH ← Peak predicted
+Day 3: 0.69  HIGH
+Day 4: 0.58  MEDIUM
+Day 5: 0.45  MEDIUM
+Day 6: 0.38  LOW-MEDIUM
+Day 7: 0.31  LOW-MEDIUM
+Recommendation: Risk peaks in 2 days.
+Initiate REACH outreach today.
+---
+
+## Data Governance Framework
+
+### Privacy Principles
+- **No raw text storage** after feature extraction
+- **30-day rolling window** — older data auto-deleted
+- **Anonymised feature vectors** only in model inputs
+- **Opt-in consent** required before any data collection
+- **PDPA compliance** — Singapore Personal Data Protection Act
+- **Parent/guardian consent** required for users under 18
+
+### Access Control
+
+| Role | Access Level |
+|---|---|
+| Student (self) | Own risk score only |
+| School Counsellor | Score + trajectory + feature summary |
+| REACH Officer | Full output including clinical notes |
+| Researcher | Anonymised aggregate data only |
+| System Admin | Audit logs only |
+
+---
+
+## Validation Framework
+
+### Key Metrics
+
+| Metric | Target | Rationale |
+|---|---|---|
+| Sensitivity (recall) | >85% | Missing true positives is high-stakes |
+| Specificity | >75% | Minimise counsellor false alarm workload |
+| F1 Score | >80% | Balanced performance |
+| AUC-ROC | >0.90 | Strong risk discrimination |
+
+---
+
+## Technology Stack
+
+| Component | Technology |
+|---|---|
+| Text preprocessing | Python, jieba, NLTK |
+| Tier 1 model | Chinese MentalBERT (HuggingFace) |
+| Tier 2 model | XGBoost |
+| Tier 3 model | PyTorch LSTM |
+| Data pipeline | Google BigQuery + Python |
+| Visualisation | Power BI / Plotly |
+
+---
+
+## Limitations and Mitigations
+
+| Limitation | Mitigation |
+|---|---|
+| Training data from Weibo — may not fully represent Singapore adolescents | Fine-tune on Singapore-specific data in Phase 2 |
+| Temporal features require sustained data collection | 30-day rolling window with auto-deletion |
+| Cultural markers may change over time | Quarterly revalidation against counsellor outcomes |
+| LSTM requires sufficient history — new users limited | Fallback to Tier 2 score for users with <7 days history |
+
+---
+
+## Related Documentation
+
+- [Annotated Bibliography](../literature/annotated_bibliography.md)
+- [Policy Brief](../policy/policy_brief.md)
+- [GUARDIAN Project](https://github.com/lfangyu443-ui/guardian-db)
+
+---
+
+*This pipeline is a research and documentation project. Clinical deployment requires IRB approval, informed consent, and institutional governance review.*

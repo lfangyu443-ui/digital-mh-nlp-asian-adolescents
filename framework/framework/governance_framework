@@ -1,0 +1,199 @@
+# Governance Framework
+## Digital Mental Health NLP Pipeline for Asian Adolescents
+
+**Last Updated:** May 2026
+
+---
+
+## Overview
+
+This document defines the governance framework for responsible deployment of the Digital Mental Health NLP Pipeline in Singapore school and community settings.
+
+> This pipeline is currently a research project. Real-world deployment requires full compliance with this framework before any pilot begins.
+
+---
+
+## 1. Guiding Principles
+
+| Principle | Description |
+|---|---|
+| **Do No Harm** | Clinical safety takes absolute priority |
+| **Privacy by Design** | Data minimisation built into architecture |
+| **Transparency** | Every risk score is explainable |
+| **Equity** | Must not disadvantage any demographic group |
+| **Accountability** | Clear human responsibility for every output |
+| **Proportionality** | Minimum data collected and retained |
+
+---
+
+## 2. Legal and Regulatory Framework
+
+| Regulation | Requirement |
+|---|---|
+| **PDPA** | Consent, purpose limitation, data minimisation |
+| **Mental Health (Care and Treatment) Act** | Mandatory reporting for imminent risk |
+| **Children and Young Persons Act** | Parental consent required under 18 |
+| **MOH Mental Health Framework** | Alignment with national care pathways |
+| **MOE Data Governance Framework** | School board approval required |
+
+**Before any pilot:**
+- [ ] IRB/Ethics Committee approval
+- [ ] MOH endorsement
+- [ ] MOE school principal approval
+- [ ] REACH team partnership agreement
+- [ ] IMH emergency escalation protocol signed
+
+---
+
+## 3. Data Governance
+
+### 3.1 Data Classification
+
+| Data Type | Sensitivity | Retention |
+|---|---|---|
+| Raw social media text | **Highest** | 0 days — never stored |
+| Anonymised feature vectors | High | 30 days rolling |
+| Risk scores | High | 90 days |
+| Aggregated population data | Medium | 12 months |
+| Audit logs | Low | 24 months |
+
+### 3.2 Data Flow
+Raw Text Input
+│
+▼ (feature extraction)
+RAW TEXT DELETED ──────────────► Feature Vectors Only
+│
+▼
+Model Inference
+│
+▼
+Risk Score → Clinical Review Interface
+│
+▼
+Action logged in audit trail
+### 3.3 Data Minimisation
+
+- No names or identifiers stored with feature vectors
+- No raw text retained after feature extraction
+- Purpose limitation — screening only; cannot be used for academic assessment or discipline
+- Data processed and stored within Singapore only
+
+---
+
+## 4. Consent Framework
+
+### 4.1 Consent by Age
+
+| Age Group | Consent Required From |
+|---|---|
+| Under 16 | Parent/guardian + adolescent assent |
+| 16–17 | Parent/guardian + adolescent |
+| 18+ | Individual only |
+
+### 4.2 Consent Must Cover
+
+1. What data is collected
+2. How it is processed (NLP, not human reading)
+3. What outputs are generated (risk scores, not diagnoses)
+4. Who sees the outputs (counsellors only)
+5. What actions may follow (counsellor outreach, not automatic referral)
+6. Right to withdraw at any time without consequence
+7. Data retention and deletion schedule
+8. Limitations of the system
+
+### 4.3 Opt-In Only
+
+Participation is strictly opt-in. No passive collection without explicit consent. No consequences for declining.
+
+---
+
+## 5. Access Control
+
+| Role | Access Level |
+|---|---|
+| **Student** | Own risk trend only (optional) |
+| **School Counsellor** | Risk scores for their school only |
+| **REACH Officer** | Full output for escalated cases |
+| **Institution Admin** | Aggregate anonymised statistics only |
+| **Researcher** | Fully de-identified data + ethics approval |
+| **System Admin** | Audit logs only — no clinical data |
+
+All clinical data access is logged with user ID, timestamp, records accessed, and action taken.
+
+---
+
+## 6. Clinical Accountability
+
+### 6.1 Responsibility Chain
+
+Pipeline Output (automated)
+│
+▼
+School Counsellor Review (mandatory — human)
+│
+├── Low/Medium Risk → Counsellor decides action
+│
+└── High Risk → REACH Officer within 2 hours
+│
+├── Crisis imminent → IMH / Emergency services
+└── Not imminent → Care plan developed
+### 6.2 Incident Review
+
+For every missed case or adverse event — review within 14 days covering:
+- What the pipeline flagged (or missed)
+- What clinical action was taken
+- Contributing factors
+- Changes required
+
+---
+
+## 7. Model Governance
+
+### 7.1 Validation Requirements
+
+| Validation | Requirement |
+|---|---|
+| Technical | AUC > 0.85, Sensitivity > 80% |
+| Clinical | Validated against Singapore counsellor assessments |
+| Equity | No significant performance gap across ethnicity/gender/SES |
+
+### 7.2 Ongoing Monitoring
+
+| Metric | Frequency | Review Threshold |
+|---|---|---|
+| Model AUC | Monthly | Drop > 0.05 |
+| False negative rate | Monthly | Rate > 15% |
+| False positive rate | Monthly | Rate > 30% |
+| Demographic parity | Quarterly | >10% gap across groups |
+
+---
+
+## 8. Research Use of Pipeline Data
+
+Anonymised data may be used for research only if:
+- [ ] Separate ethics approval obtained
+- [ ] Data fully de-identified (k-anonymity ≥ 5)
+- [ ] Findings shared back with participating schools
+- [ ] No commercial use without explicit consent
+- [ ] Raw data never leaves Singapore
+
+---
+
+## 9. Governance Review Schedule
+
+| Review | Frequency |
+|---|---|
+| Consent form | Annual |
+| Access control audit | Quarterly |
+| Model performance | Monthly |
+| Full governance review | Annual |
+| Incident review | Within 14 days of event |
+
+---
+
+## References
+
+1. PDPC Singapore. (2023). *PDPA Advisory Guidelines.*
+2. MOH Singapore. (2023). *National Mental Health and Well-being Strategy.*
+3. MOE Singapore. (2024). *Data Governance Framework for Schools.*
+4. REACH Singapore. (2024). *School Mental Health Protocol.*

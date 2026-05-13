@@ -1,0 +1,175 @@
+# Clinical Rationale
+## Digital Mental Health NLP Pipeline for Asian Adolescent
+
+## Overview
+
+Every design decision in this pipeline is grounded in clinical evidence. This document explains the **why** behind each technical choice — connecting engineering decisions to public health outcomes.
+
+## 1. Why Focus on Asian Adolescents?
+
+### 1.1 Epidemiological Justification
+
+Singapore's 2024 National Mental Health Survey identified young adults (18–29) as the highest-risk group, with 1 in 4 reporting poor mental health. Adolescents are compounded by:
+
+- **Academic pressure:** High-stakes examination system creates sustained stress
+- **Social comparison:** Digital media amplifies peer comparison in collectivist contexts
+- **Help-seeking barriers:** Stigma and face-saving concerns reduce voluntary help-seeking
+- **Service gap:** The 18–21 age group falls between youth and adult services
+
+### 1.2 Cultural Expression of Distress
+
+| Expression Type | Western Pattern | Asian Adolescent Pattern |
+|---|---|---|
+| **Direct disclosure** | "I feel depressed" | Rare — face-saving concerns |
+| **Somatic framing** | Physical complaint | Primary distress proxy: "头很痛，睡不着" |
+| **Academic framing** | Separate from mental health | Core distress marker: "考试又失败了" |
+| **Indirect language** | Underused | Primary mode: "最近好累" |
+| **Family reference** | Individual focus | Central: "让父母失望" |
+
+**Clinical implication:** A model trained on Western English text will miss Asian adolescents most at risk.
+
+### 1.3 Singapore-Specific Factors
+
+- **Code-switching:** "好stressed, cannot tahan anymore lah"
+- **Platform diversity:** Weibo, Instagram, Discord rather than Reddit/Twitter
+- **Cultural duality:** Chinese collectivist + Western individualist values
+- **98%+ smartphone penetration** — digital screening feasible at scale
+
+---
+
+## 2. Why NLP-Based Screening?
+
+### 2.1 The Help-Seeking Gap
+
+88.7% of Singapore young adults prefer online over face-to-face help-seeking (MOH, 2024). Current platforms are **reactive** — they serve people who seek them out. Most at-risk adolescents never initiate contact.
+
+**The NLP solution:** Passively monitor digital text where adolescents already express distress naturally — identifying at-risk individuals before crisis.
+
+### 2.2 Advantages Over Traditional Screening
+
+| Approach | Coverage | Frequency | Stigma |
+|---|---|---|---|
+| Clinical interview | Low | Occasional | High barrier |
+| Self-report surveys | Moderate | Termly | Moderate |
+| Teacher referral | Low | Ad hoc | High dependency |
+| **NLP pipeline** | **High** | **Continuous** | **No barrier** |
+
+---
+
+## 3. Clinical Rationale for 3-Tier Architecture
+
+### 3.1 Why Three Tiers?
+
+A single-model approach creates unacceptable tradeoffs. The 3-tier architecture resolves this:
+Tier 1: Cast wide net (high sensitivity, fast, cheap)
+↓ Only high-distress cases proceed
+Tier 2: Add context and nuance (balanced sensitivity/specificity)
+↓ Generate interpretable risk score
+Tier 3: Add temporal dimension (identify peak risk windows)
+↓ Optimal intervention timing
+### 3.2 Tier 1 — MentalBERT Rationale
+
+MentalBERT was pre-trained on Chinese social media mental health text — the same distribution as the target population. Domain specificity is clinically critical:
+
+- General BERT tokenises "绝望感" as separate characters, losing compound meaning
+- MentalBERT preserves compound distress terms as semantic units
+- Tuned for **high sensitivity** — missing a true at-risk individual is a clinical error
+
+### 3.3 Tier 2 — XGBoost + SHAP Rationale
+
+XGBoost chosen over deep neural networks specifically for **clinical interpretability**. Counsellors must understand *why* an individual was flagged — not just *that* they were flagged.
+
+**Feature selection rationale:**
+
+| Feature | Clinical Basis |
+|---|---|
+| Hopelessness language | Strongest predictor of suicide risk (Beck, 1974) |
+| Social isolation | Key depression symptom; predicts escalation |
+| Late-night posting | Disrupted sleep is both symptom and risk factor |
+| Academic stress | Singapore-specific; exam periods correlate with crises |
+| Somatic complaints | Culturally normative distress proxy in Asian populations |
+| Positive language (inverse) | Low positive affect predicts depression onset |
+| Code-switching | Higher emotional arousal in bilingual speakers |
+
+### 3.4 Tier 3 — LSTM Rationale
+
+Grounded in Eckstein et al. (2026): human behaviour encodes risk history at multiple timescales. Point-in-time assessment misses:
+
+- **Trend direction:** Score of 65 increasing is more concerning than one decreasing
+- **Peak prediction:** Knowing risk peaks in 2 days enables proactive outreach today
+- **Pattern recognition:** Cyclical patterns (exam anxiety, weekend isolation)
+Point-in-time: "Risk score = 65" → Counsellor uncertain when to act
+Trajectory:    "Risk peaks at 78 in 2 days" → Counsellor acts today
+
+---
+
+## 4. Clinical Safety Design
+
+### 4.1 Human-in-the-Loop Requirement
+
+**No automated action permitted at any risk tier.** All outputs are decision-support tools. This is non-negotiable:
+
+1. NLP models have error rates — human judgment corrects them
+2. Models cannot know about bereavement, family crisis, or illness
+3. The counsellor reaching out IS the therapeutic intervention
+
+### 4.2 False Negative Priority
+
+In mental health screening, **missed cases are more harmful than false alarms.** The pipeline is tuned to:
+
+- Accept higher false positive rates at Tier 1
+- Use Tier 2 to reduce false positives before escalation
+- Reserve human review for all high-risk Tier 3 outputs
+
+### 4.3 Minimum Viable Safety Standards
+
+Before any pilot deployment:
+
+- [ ] IRB/ethics board approval
+- [ ] Informed consent protocol (adolescents + parents/guardians)
+- [ ] Counsellor training on pipeline outputs
+- [ ] Clear escalation pathways to REACH, IMH, and emergency services
+- [ ] Incident review process for missed crises
+- [ ] Quarterly model revalidation against clinical outcomes
+- [ ] PDPA compliance review
+
+---
+
+## 5. Limitations and Honest Assessment
+
+### 5.1 What This Pipeline Cannot Do
+
+- **Diagnose** mental health conditions — screening tool only
+- **Replace** clinical assessment — triages, not diagnoses
+- **Guarantee** detection — no screening tool achieves 100% sensitivity
+- **Account** for all cultural nuances — Indian and Malay communities underrepresented
+
+### 5.2 Known Biases
+
+| Bias | Description | Mitigation |
+|---|---|---|
+| Training data origin | Weibo (China) — may not represent Singapore | Singapore validation in Phase 2 |
+| Language coverage | Optimised for Simplified Chinese | T→S conversion + bilingual validation |
+| Platform bias | Social media only | Complementary self-report integration |
+| Demographic gaps | Limited Malay/Indian validation | Stratified validation by ethnicity |
+| Temporal drift | Language evolves | Quarterly revalidation |
+
+### 5.3 What Success Looks Like
+
+A successfully deployed pipeline would:
+- Identify at-risk adolescents 2–4 weeks earlier than current referral pathways
+- Reduce counsellor time spent on reactive crisis management
+- Increase proportion receiving proactive outreach
+- Generate longitudinal data on Singapore adolescent mental health trajectories
+
+---
+
+## References
+
+1. MOH Singapore (2024). *National Mental Health and Well-being Strategy.*
+2. Ji, S. et al. (2024). Chinese MentalBERT. *arXiv:2402.09151*
+3. Zhang, T. et al. (2022). NLP applied to mental illness detection. *NPJ Digital Medicine, 5*(1).
+4. Eckstein, M.K. et al. (2026). Hybrid neural-cognitive models. *Nature Human Behaviour.*
+5. Weng, J.H. et al. (2024). mindline.sg. *JMIR Mental Health.*
+6. Beck, A.T. et al. (1974). The Hopelessness Scale. *Journal of Consulting and Clinical Psychology, 42*(6).
+7. Lin, F.Y. (2026). OWENA Programme Evaluation. *HCSA / NUS SPH.*

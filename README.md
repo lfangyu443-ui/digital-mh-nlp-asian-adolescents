@@ -1,5 +1,5 @@
-Digital Mental Health NLP Pipeline for Asian Adolescents
-A Clinically-Grounded, Multilingual Framework for Early Mental Health Risk Detection — Deployable Across APAC School and Community Settings
+# Digital Mental Health NLP Pipeline for Asian Adolescents
+### A Clinically-Grounded, Multilingual Framework for Early Mental Health Risk Detection — Deployable Across APAC School and Community Settings
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
@@ -45,57 +45,38 @@ This project builds a **culturally-adapted, multilingual NLP pipeline** that det
 ---
 
 ## Pipeline Architecture
-INPUT LAYER
-├── Social media text (Mandarin/English)
-├── Self-report surveys
-└── Contextual metadata (posting time, frequency)
-│
-TIER 1: SCREENING
-├── Model: Chinese MentalBERT (Ji et al., 2024)
-├── Languages: Mandarin (Traditional + Simplified) + English
-├── Benchmark: F1 = 88.39% on Chinese suicide risk dataset
-└── Output: Binary distress flag → low exits, high proceeds
-│
-TIER 2: RISK SCORING
-├── Model: XGBoost + SHAP explainability
-├── Features: Linguistic · Temporal · Social · Cultural context
-└── Output: Risk score 0–100 + interpretable feature weights
-│
-TIER 3: TEMPORAL FORECASTING
-├── Model: LSTM (30-day lookback)
-├── Basis: Multi-timescale memory (Eckstein et al., 2026)
-└── Output: 7-day risk trajectory + intervention timing
-│
-OUTPUT / ACTION LAYER
-├── Low risk   → Digital self-care platform
-├── Medium risk → Trained counsellor referral + peer support
-└── High risk  → School-based escalation + emergency services
-ALL high-risk outputs require human clinical review
+
+**Tier 1 — Screening:** Chinese MentalBERT (Ji et al., 2024) → binary distress classification (Mandarin + English, F1 = 88.39% on Chinese suicide risk dataset). Low distress exits the pipeline; high distress proceeds to Tier 2.
+
+**Tier 2 — Risk Scoring:** XGBoost + SHAP explainability → risk score 0–100 with interpretable feature weights across linguistic, temporal, social, and cultural context features.
+
+**Tier 3 — Temporal Forecasting:** LSTM with 30-day lookback (grounded in Eckstein et al., 2026) → 7-day risk trajectory with recommended intervention timing.
+
+**Output / Action Layer:**
+- **Low risk** → Digital self-care platform
+- **Medium risk** → Trained counsellor referral + peer support
+- **High risk** → School-based escalation + emergency mental health services
+
+> **ALL high-risk outputs require human clinical review. No automated action at any tier.**
 
 **Deployment context is configured locally.** Service pathway mapping is adapted to the institutional and national context of each deployment.
 
 ---
 
 ## Repository Structure
-digital-mh-nlp-asian-adolescents/
-├── README.md
-├── literature/
-│   └── annotated_bibliography.md
-├── framework/
-│   ├── pipeline_design.md
-│   ├── clinical_rationale.md
-│   ├── governance_framework.md
-│   └── guardian_connection.md
-├── notebooks/
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_text_preprocessing.ipynb
-│   ├── 03_classification_demo.ipynb
-│   └── 04_risk_scoring.ipynb
-├── data/
-│   └── README.md
-├── policy/
-│   └── policy_brief.md
-└── assets/
+
+| Folder / File | Contents |
+|---|---|
+| `literature/annotated_bibliography.md` | 11 papers across 4 categories |
+| `framework/pipeline_design.md` | Full 3-tier architecture + feature engineering |
+| `framework/clinical_rationale.md` | Evidence base for every design decision |
+| `framework/governance_framework.md` | Data governance + ethics + consent framework |
+| `framework/guardian_connection.md` | Link to GUARDIAN multimodal project |
+| `notebooks/01_data_exploration.ipynb` | Dataset EDA + visualisations |
+| `notebooks/02_text_preprocessing.ipynb` | Multilingual NLP preprocessing pipeline |
+| `notebooks/03_classification_demo.ipynb` | MentalBERT classification demo |
+| `notebooks/04_risk_scoring.ipynb` | XGBoost + SHAP risk scoring |
+| `policy/policy_brief.md` | Singapore deployment policy brief |
 
 ---
 
@@ -115,11 +96,11 @@ Chinese MentalBERT achieves **F1 = 88.39%** on Chinese mental health data vs ~68
 
 ## Architecture Rationale
 
-**Three tiers** — because a single model forces an unacceptable clinical tradeoff between sensitivity and specificity.
+**Three tiers — not one** — because a single model forces an unacceptable clinical tradeoff between sensitivity and specificity. The 3-tier design resolves this by applying progressively deeper analysis only to flagged cases.
 
-**XGBoost over deep networks** — because counsellors need to understand *why* a score was generated, not just *what* it is. SHAP provides this.
+**XGBoost over deep networks** — because counsellors need to understand *why* a score was generated, not just *what* it is. SHAP explainability provides feature-level clinical justification for every risk score.
 
-**MentalBERT over general LLMs** — because indirect Chinese distress expression requires domain-specific pre-training, not general-purpose prompting.
+**MentalBERT over general LLMs** — because indirect Chinese distress expression requires domain-specific pre-training on mental health social media text. General multilingual models systematically underperform on non-Latin scripts (Google DeepMind, 2025).
 
 ---
 
@@ -149,9 +130,9 @@ See `policy/policy_brief.md` for the full Singapore deployment framework.
 
 ## Data Standards & Interoperability
 
-| Standard | Role |
+| Standard | Role in Pipeline |
 |---|---|
-| **HL7 FHIR** | Risk scores as FHIR Observation resources |
+| **HL7 FHIR** | Risk scores exported as FHIR Observation resources |
 | **SNOMED CT** | Mental health condition coding |
 | **ICD-10** | F32/F33 depression risk codes for clinical records |
 
@@ -164,20 +145,34 @@ See `policy/policy_brief.md` for the full Singapore deployment framework.
 | **Clinical safety first** | Human review mandatory — no automated action |
 | **Interpretability** | SHAP values for every risk score |
 | **Cultural validity** | Validated on Asian adolescent populations |
-| **Privacy by design** | Raw text deleted after feature extraction |
-| **Equity** | Audits for representation, cultural, stereotype bias |
-| **Consent** | Explicit opt-in — no passive collection |
+| **Privacy by design** | Raw text deleted after feature extraction — never stored |
+| **Equity** | Regular audits for representation, cultural, and stereotype bias |
+| **Consent** | Explicit opt-in only — no passive collection |
 | **Data protection** | PDPA (SG) · PDPO (HK) · PIPL (CN) · HIPAA (US) · GDPR (EU) · APPI (JP) |
-| **Quadruple Aim** | Patient experience · Population health · Cost · Provider experience |
+| **Quadruple Aim** | Patient experience · Population health · Cost reduction · Provider experience |
 
 ---
 
-## 🔬 Key References
+## Key References
 
-**Clinical:** MOH Singapore (2024); Weng et al. (2024); Systematic Review (2026)
-**NLP:** Ji et al. (2024) Chinese MentalBERT; CNSocialDepress (2025); CLPsych 2024; Zhang et al. (2022)
-**Multilingual AI:** Google DeepMind Phonemes (2025); EmbeddingGemma (2025); Tx-LLM (2024)
-**Cognitive Science:** Eckstein et al. (2026) *Nature Human Behaviour*
+**Clinical Foundation**
+- MOH Singapore (2024). *National Mental Health and Well-being Strategy.*
+- Weng, J.H. et al. (2024). mindline.sg. *JMIR Mental Health.*
+- Systematic Review (2026). Digital interventions for adolescent mental health. *Al-Rafidain Journal of Medical Sciences.*
+
+**NLP Methods**
+- Ji, S. et al. (2024). Chinese MentalBERT. *arXiv:2402.09151*
+- CNSocialDepress (2025). *arXiv:2510.11233*
+- Chim, J. et al. (2024). CLPsych 2024 Shared Task. *ACL Anthology.*
+- Zhang, T. et al. (2022). NLP applied to mental illness detection. *NPJ Digital Medicine, 5*(1).
+
+**Multilingual AI**
+- Google DeepMind (2025). Prompting with Phonemes.
+- Google DeepMind (2025). EmbeddingGemma.
+- Google DeepMind (2024). Tx-LLM.
+
+**Cognitive Science**
+- Eckstein, M.K. et al. (2026). Hybrid neural-cognitive models. *Nature Human Behaviour.*
 
 ---
 
@@ -205,3 +200,4 @@ MIT License — see [LICENSE](LICENSE) for details.
 ---
 
 *Research project only. Clinical deployment requires IRB approval, informed consent, and institutional governance.*
+

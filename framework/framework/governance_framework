@@ -1,16 +1,6 @@
 # Governance Framework
 ## Digital Mental Health NLP Pipeline for Asian Adolescents
 
-**Last Updated:** May 2026
-
----
-
-## Overview
-
-This document defines the governance framework for responsible deployment of the Digital Mental Health NLP Pipeline in Singapore school and community settings.
-
-> This pipeline is currently a research project. Real-world deployment requires full compliance with this framework before any pilot begins.
-
 ---
 
 ## 1. Guiding Principles
@@ -18,36 +8,53 @@ This document defines the governance framework for responsible deployment of the
 | Principle | Description |
 |---|---|
 | **Do No Harm** | Clinical safety takes absolute priority |
-| **Privacy by Design** | Data minimisation built into architecture |
-| **Transparency** | Every risk score is explainable |
-| **Equity** | Must not disadvantage any demographic group |
-| **Accountability** | Clear human responsibility for every output |
+| **Privacy by Design** | Data minimisation built into architecture, not added later |
+| **Transparency** | Every risk score is explainable — no black-box decisions |
+| **Equity** | Must not systematically disadvantage any demographic group |
+| **Accountability** | Clear human responsibility for every automated output |
 | **Proportionality** | Minimum data collected and retained |
+| **Rectification at Source** | Raw text processed and deleted at point of collection — never stored for later cleaning (Chee, 2026) |
 
 ---
 
 ## 2. Legal and Regulatory Framework
 
-| Regulation | Requirement |
-|---|---|
-| **PDPA** | Consent, purpose limitation, data minimisation |
-| **Mental Health (Care and Treatment) Act** | Mandatory reporting for imminent risk |
-| **Children and Young Persons Act** | Parental consent required under 18 |
-| **MOH Mental Health Framework** | Alignment with national care pathways |
-| **MOE Data Governance Framework** | School board approval required |
+### 2.1 Data Protection Laws by Jurisdiction
 
-**Before any pilot:**
+| Regulation | Jurisdiction | Key Requirements |
+|---|---|---|
+| **PDPA** | Singapore | Consent, purpose limitation, data minimisation, retention limits |
+| **PDPO** | Hong Kong | Data access, correction rights, data security |
+| **PIPL** | China | Consent, cross-border transfer restrictions |
+| **HIPAA** | USA | Protected health information safeguards |
+| **GDPR** | European Union | Data subject rights, breach notification, DPO requirement |
+| **APPI** | Japan | Sensitive data handling, third-party disclosure |
+| **PIPA** | South Korea | Consent, minimisation, security obligations |
+
+### 2.2 AI and Clinical AI Regulations
+
+| Regulation | Jurisdiction | Relevance |
+|---|---|---|
+| **MOH AIHGle** | Singapore | Mandatory for clinical AI — fairness, accountability, transparency |
+| **HSA SaMD Framework** | Singapore | Pipeline may be classified as Software-as-a-Medical Device |
+| **FDA SaMD Guidance** | USA | Software as Medical Device regulatory pathway |
+| **EU AI Act** | European Union | Pipeline likely classified as high-risk AI system |
+| **WHO Digital Health Guidance** | Global | Ethical framework for AI in health |
+
+### 2.3 Institutional Requirements Before Any Pilot
+
 - [ ] IRB/Ethics Committee approval
-- [ ] MOH endorsement
-- [ ] MOE school principal approval
-- [ ] REACH team partnership agreement
-- [ ] IMH emergency escalation protocol signed
+- [ ] MOH endorsement or no-objection letter
+- [ ] School principal and board approval
+- [ ] School-based mental health team partnership agreement
+- [ ] Emergency escalation protocol with crisis services signed
+- [ ] Data Protection Officer review of data flows
 
 ---
 
 ## 3. Data Governance
 
-### 3.1 Data Classification
+### 3.1 Data Classification and Retention
 
 | Data Type | Sensitivity | Retention |
 |---|---|---|
@@ -57,109 +64,145 @@ This document defines the governance framework for responsible deployment of the
 | Aggregated population data | Medium | 12 months |
 | Audit logs | Low | 24 months |
 
-### 3.2 Data Flow
-Raw Text Input
-│
-▼ (feature extraction)
-RAW TEXT DELETED ──────────────► Feature Vectors Only
-│
-▼
-Model Inference
-│
-▼
-Risk Score → Clinical Review Interface
-│
-▼
-Action logged in audit trail
-### 3.3 Data Minimisation
+### 3.2 Data Safety Recommendations
+
+1. **Encryption at rest and in transit** — AES-256 minimum for stored feature vectors and risk scores
+2. **Zero-knowledge architecture** — system administrators cannot access clinical data
+3. **Minimal data collection** — collect only what is necessary for risk scoring
+4. **Regular penetration testing** — quarterly security audits
+5. **Breach response protocol** — 72-hour notification under GDPR; 3-day under PDPA
+6. **Data residency** — no cross-border transfer of health data without explicit consent and legal basis
+
+### 3.3 Data Minimisation Principles
 
 - No names or identifiers stored with feature vectors
 - No raw text retained after feature extraction
 - Purpose limitation — screening only; cannot be used for academic assessment or discipline
-- Data processed and stored within Singapore only
+- Pseudonymisation — internal IDs only
+- Geographic restriction — data processed and stored within deployment country
 
 ---
 
-## 4. Consent Framework
+## 4. Privacy Regulations — Key Recommendations
 
 ### 4.1 Consent by Age
 
-| Age Group | Consent Required From |
-|---|---|
-| Under 16 | Parent/guardian + adolescent assent |
-| 16–17 | Parent/guardian + adolescent |
-| 18+ | Individual only |
+| Age Group | Consent Required From | Type |
+|---|---|---|
+| Under 16 | Parent/guardian + adolescent assent | Written informed consent |
+| 16–17 | Parent/guardian + adolescent | Written informed consent |
+| 18+ | Individual only | Written informed consent |
 
-### 4.2 Consent Must Cover
+### 4.2 Informed Consent Must Cover
 
-1. What data is collected
-2. How it is processed (NLP, not human reading)
+1. What data is collected and how
+2. How it is processed (NLP analysis — not human reading of messages)
 3. What outputs are generated (risk scores, not diagnoses)
-4. Who sees the outputs (counsellors only)
-5. What actions may follow (counsellor outreach, not automatic referral)
+4. Who sees the outputs (counsellors only, not teachers or parents unless escalation)
+5. What actions may follow (counsellor outreach — not automatic referral)
 6. Right to withdraw at any time without consequence
-7. Data retention and deletion schedule
-8. Limitations of the system
+7. Data retention schedule and deletion process
+8. Limitations of the system — it can miss cases; it is not a diagnosis
+9. How to make a complaint or access stored data
 
-### 4.3 Opt-In Only
+### 4.3 Privacy Recommendations by Jurisdiction
 
-Participation is strictly opt-in. No passive collection without explicit consent. No consequences for declining.
+| Jurisdiction | Key Additional Requirement |
+|---|---|
+| Singapore | Notify PDPC within 3 days of data breach involving significant harm |
+| EU | Appoint Data Protection Officer; conduct DPIA before deployment |
+| USA | HIPAA Business Associate Agreement with any third-party processors |
+| China | Data localisation — personal data of Chinese citizens cannot leave China |
+| Japan | Explicit consent required before providing sensitive data to third parties |
 
 ---
 
-## 5. Access Control
+## 5. AI Bias and Equity
+
+### 5.1 Three Types of AI Bias (Chee, 2026)
+
+| Bias Type | Description | Pipeline Risk | Mitigation |
+|---|---|---|---|
+| **Representation Bias** | Training data over-represents certain populations | Weibo data over-represents mainland China | Singapore-specific validation in Phase 2 |
+| **Cultural Bias** | Model encodes one cultural context as default | Mainland Chinese norms may differ from SG/HK/TW | Multi-country validation data |
+| **Stereotype Bias** | Features encode harmful generalisations | Academic stress framing may penalise high achievers | Context-specific feature sensitivity audit |
+
+### 5.2 Social Determinants of Health — Equity Considerations (Chee, 2026)
+
+| SDOH Factor | Pipeline Risk | Mitigation |
+|---|---|---|
+| Socioeconomic status | Low-income adolescents less present on social media | Complement with school-based surveys |
+| Digital access | Those without smartphones invisible to system | Multi-channel data collection |
+| Education level | Low health literacy affects self-report quality | Plain language interface design |
+| Language | Non-Mandarin/English speakers underserved | Expand language coverage in future versions |
+| Geographic | Rural/isolated adolescents have different patterns | Context-specific model calibration |
+| Ethnicity | Chinese-dominant training data | Stratified validation by ethnicity |
+
+### 5.3 Cognitive Bias in Clinical Decision-Making (Chee, 2026)
+
+| Bias | Description | Mitigation |
+|---|---|---|
+| **Availability heuristic** | Over-weighting memorable past cases | Training on base rates; show population context |
+| **Confirmation bias** | Discounting high score when student seems "fine" | Interface shows trend data not just current score |
+| **Anchoring** | First score anchors future expectations | Clear display of score trajectory and changes |
+
+---
+
+## 6. Stakeholder Management
+
+### 6.1 Power vs Interest Matrix (Chee, 2026)
+
+| Stakeholder | Power | Interest | Engagement Strategy |
+|---|---|---|---|
+| School Principal | High | Medium | Keep informed — quarterly reports |
+| School Counsellor | Medium | High | Co-design interface from day 1 |
+| REACH/Clinical Officer | High | High | Collaborate closely — key clinical partner |
+| Student/Adolescent | Low | High | Consent-centred; opt-in only |
+| Parent/Guardian | Medium | High | Clear consent process; privacy assurances |
+| IT/Data Team | Medium | Medium | Technical partnership |
+| Regulator/IRB | High | Low | Compliance-first engagement |
+| Researcher | Low | High | Ethics approval; data sharing agreement |
+
+---
+
+## 7. Access Control
 
 | Role | Access Level |
 |---|---|
-| **Student** | Own risk trend only (optional) |
-| **School Counsellor** | Risk scores for their school only |
-| **REACH Officer** | Full output for escalated cases |
-| **Institution Admin** | Aggregate anonymised statistics only |
-| **Researcher** | Fully de-identified data + ethics approval |
-| **System Admin** | Audit logs only — no clinical data |
-
-All clinical data access is logged with user ID, timestamp, records accessed, and action taken.
+| Student (self) | Own risk trend only (optional) |
+| School Counsellor | Scores for their school only + feature summary |
+| Clinical/REACH Officer | Full output for escalated cases |
+| Institution Admin | Aggregate anonymised statistics only |
+| Researcher | Fully de-identified data + ethics approval |
+| System Admin | Audit logs only — no clinical data |
 
 ---
 
-## 6. Clinical Accountability
+## 8. Clinical Accountability
 
-### 6.1 Responsibility Chain
+### 8.1 Responsibility Chain
 
-Pipeline Output (automated)
-│
-▼
-School Counsellor Review (mandatory — human)
-│
-├── Low/Medium Risk → Counsellor decides action
-│
-└── High Risk → REACH Officer within 2 hours
-│
-├── Crisis imminent → IMH / Emergency services
-└── Not imminent → Care plan developed
-### 6.2 Incident Review
+Pipeline Output (automated) → School Counsellor Review (mandatory — human) → Low/Medium: counsellor decides → High: Clinical Officer notified within 2 hours → Crisis imminent: emergency services → Not imminent: care plan developed.
 
-For every missed case or adverse event — review within 14 days covering:
-- What the pipeline flagged (or missed)
-- What clinical action was taken
-- Contributing factors
-- Changes required
+### 8.2 Incident Review
+
+For every missed case or adverse event — review within 14 days covering what the pipeline flagged, what clinical action was taken, contributing factors, and changes required.
 
 ---
 
-## 7. Model Governance
+## 9. Model Governance
 
-### 7.1 Validation Requirements
+### 9.1 Validation Requirements
 
 | Validation | Requirement |
 |---|---|
 | Technical | AUC > 0.85, Sensitivity > 80% |
-| Clinical | Validated against Singapore counsellor assessments |
+| Clinical | Validated against local counsellor assessments |
 | Equity | No significant performance gap across ethnicity/gender/SES |
 
-### 7.2 Ongoing Monitoring
+### 9.2 Ongoing Monitoring
 
-| Metric | Frequency | Review Threshold |
+| Metric | Frequency | Threshold for Review |
 |---|---|---|
 | Model AUC | Monthly | Drop > 0.05 |
 | False negative rate | Monthly | Rate > 15% |
@@ -168,18 +211,7 @@ For every missed case or adverse event — review within 14 days covering:
 
 ---
 
-## 8. Research Use of Pipeline Data
-
-Anonymised data may be used for research only if:
-- [ ] Separate ethics approval obtained
-- [ ] Data fully de-identified (k-anonymity ≥ 5)
-- [ ] Findings shared back with participating schools
-- [ ] No commercial use without explicit consent
-- [ ] Raw data never leaves Singapore
-
----
-
-## 9. Governance Review Schedule
+## 10. Governance Review Schedule
 
 | Review | Frequency |
 |---|---|
@@ -193,7 +225,12 @@ Anonymised data may be used for research only if:
 
 ## References
 
-1. PDPC Singapore. (2023). *PDPA Advisory Guidelines.*
-2. MOH Singapore. (2023). *National Mental Health and Well-being Strategy.*
-3. MOE Singapore. (2024). *Data Governance Framework for Schools.*
-4. REACH Singapore. (2024). *School Mental Health Protocol.*
+1. PDPC Singapore. (2023). PDPA Advisory Guidelines.
+2. MOH Singapore. (2023). AI in Healthcare Guidelines (AIHGle).
+3. HSA Singapore. (2023). Software as a Medical Device Framework.
+4. EU. (2024). EU AI Act.
+5. WHO. (2021). Ethics and Governance of AI for Health.
+
+---
+
+*See also: clinical_rationale.md | pipeline_design.md | policy/policy_brief.md*
